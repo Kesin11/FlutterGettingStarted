@@ -1,15 +1,16 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:myapp/model/favorite.dart';
 
 class RandomWordsState extends State<RandomWords> {
   final _suggestions = <WordPair>[];
-  final _saved = Set<WordPair>();
+  final _model = FavoriteModel();
   final _biggerFont = const TextStyle(fontSize: 18.0);
 
   void _pushSaved() {
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (BuildContext context) {
-      final Iterable<ListTile> tiles = _saved.map((WordPair pair) {
+      final Iterable<ListTile> tiles = _model.toList().map((WordPair pair) {
         return ListTile(
           title: Text(
             pair.asPascalCase,
@@ -59,7 +60,7 @@ class RandomWordsState extends State<RandomWords> {
   }
 
   Widget _buildRow(WordPair pair, int index) {
-    final bool alreadySaved = _saved.contains(pair);
+    final bool alreadySaved = _model.isAlreadyAdded(pair);
     return ListTile(
       title:
           Text("${index.toString()}: ${pair.asPascalCase}", style: _biggerFont),
@@ -70,11 +71,7 @@ class RandomWordsState extends State<RandomWords> {
       onTap: () {
         setState(() {
           // Tip: Flutterのreactiveな仕組みによってsetState()が呼ばれるとbuild()を呼ぶのでUIが更新される
-          if (alreadySaved) {
-            _saved.remove(pair);
-          } else {
-            _saved.add(pair);
-          }
+          _model.toggle(pair);
         });
       },
     );
