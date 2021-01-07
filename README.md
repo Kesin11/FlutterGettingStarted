@@ -2,6 +2,7 @@
 
 A new Flutter project.
 test
+kick ci
 
 ## Getting Started
 
